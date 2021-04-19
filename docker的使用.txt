@@ -1,0 +1,100 @@
+启动已停止运行的容器
+
+查看所有的容器命令
+docker ps -a
+使用 docker start 启动一个已停止的容器
+docker start 容器id
+
+后台运行：
+在大部分的场景下，我们希望 docker 的服务是在后台运行的，我们可以过 -d 指定容器的运行模式
+docker run -itd --name ubuntu-test ubuntu /bin/bash
+
+停止一个容器
+docker stop 容器ID
+
+停止的容器可以通过 docker restart 重启
+docker restart 容器ID
+
+进入容器
+在使用 -d 参数时，容器启动后会进入后台。此时想要进入容器，可以通过以下指令进入
+docker exec 命令，退出容器终端，不会导致容器的停止。
+docker exec -it 容器ID /bin/bash
+
+导出容器
+如果要导出本地某个容器，可以使用 docker export 命令
+docker export 容器ID > ubuntu.tar
+导出容器 容器ID 快照到本地文件 ubuntu.tar
+
+导入容器快照
+可以使用 docker import 从容器快照文件中再导入为镜像，以下实例将快照文件 ubuntu.tar 导入到镜像test/ubuntu:v1
+cat docker/ubuntu.tar | docker import - test/ubuntu:v1
+
+也可以通过指定 URL 或者某个目录来导入
+docker import http://example.com/exampleimage.tgz example/imagerepo
+
+删除容器
+删除容器使用 docker rm 命令
+docker rm -f 容器ID
+
+下面的命令可以清理掉所有处于终止状态的容器
+docker container prune
+
+在docker容器中运行一个 Python Flask 应用来运行一个web应用
+docker pull training/webapp  # 载入镜像
+
+docker run -d -P training/webapp python app.py
+参数说明:
+-d:让容器在后台运行。
+-P:将容器内部使用的网络端口随机映射到我们使用的主机上。
+
+使用 docker ps 来查看我们正在运行的容器
+docker ps
+可以看到映射到主机的端口，通过 http://ip:端口/ 访问
+
+我们也可以通过 -p 参数来设置不一样的端口
+docker run -d -p 5000:5000 training/webapp python app.py
+容器内部的 5000 端口映射到我们本地主机的 5000 端口上
+
+可以使用 docker port 容器ID 或者 docker port 容器NAMES 来查看容器端口的映射情况
+docker port 容器ID
+docker port 容器NAMES
+
+查看 WEB 应用程序日志
+docker logs [ID或者名字] 可以查看容器内部的标准输出
+docker logs -f 容器ID
+docker logs -f 容器NAMES
+参数-f: 让 docker logs 像使用 tail -f 一样来输出容器内部的标准输出。
+可以看到应用程序使用的是 5000 端口并且能够查看到应用程序的访问日志
+
+查看WEB应用程序容器的进程
+docker top 容器ID
+docker top 容器NAMES
+
+检查 WEB 应用程序
+使用 docker inspect 来查看 Docker 的底层信息。它会返回一个 JSON 文件记录着 Docker 容器的配置和状态信息。
+docker inspect 容器ID
+docker inspect 容器NAMES
+
+停止 WEB 应用容器
+docker stop 容器ID
+docker stop 容器NAMES
+
+重启WEB应用容器
+docker start 容器ID
+docker start 容器NAMES
+
+docker ps -l 查询最后一次创建的容器
+
+我们可以使用 docker restart 命令来重启
+docker restart 容器ID
+docker restart 容器NAMES
+
+移除WEB应用容器，删除容器时，容器必须是停止状态，否则会报错误
+docker rm 容器ID
+docker rm 容器NAMES
+
+查看容器的运行状态
+docker stats
+
+
+
